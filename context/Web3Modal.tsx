@@ -7,11 +7,11 @@ const projectId = "6914ae5e338e56b3df3e9d955c010528";
 
 // 2. Set chains
 const mainnet = {
-  chainId: 1,
-  name: "Ethereum",
+  chainId: 280,
+  name: "zkSync alpha testnet",
   currency: "ETH",
   explorerUrl: "https://etherscan.io",
-  rpcUrl: "https://cloudflare-eth.com",
+  rpcUrl: " https://zksync2-testnet.zksync.dev",
 };
 
 // 3. Create modal
