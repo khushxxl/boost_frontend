@@ -79,6 +79,7 @@ function Hero() {
             {options.map((data, i) => {
               return (
                 <div
+                  key={i}
                   onClick={() => setquantity(data)}
                   className="p-[5px] bg-gray-600 cursor-pointer rounded-sm"
                 >
