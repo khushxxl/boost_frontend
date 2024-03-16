@@ -7,7 +7,12 @@ export const AppContext = createContext();
 function AppProvider({ children }) {
   const [walletAddress, setwalletAddress] = useState("");
 
-  const options = ["ZkSync", "Base", "Scroll", "Starknet"];
+  const options = [
+    { img: require("../assets/zk.svg"), chain: "ZkSync" },
+    { img: require("../assets/base.svg"), chain: "Base" },
+    { img: require("../assets/scroll.svg"), chain: "Scroll" },
+    { img: require("../assets/starknet.svg"), chain: "Starknet" },
+  ];
   const [chainSelected, setchainSelected] = useState(null);
 
   return (

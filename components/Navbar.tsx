@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { useWeb3Modal } from "@web3modal/ethers/react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import Dropdown from "./Dropdown";
+import Link from "next/link";
 
 function Navbar() {
   const { walletAddress, setwalletAddress } = useContext(AppContext);
@@ -42,16 +43,20 @@ function Navbar() {
   }, []);
 
   return (
-    <div className="p-5 flex w-full bg-[#06062A]  mx-auto px-10 rounded-b-3xl">
+    <div className="p-5 flex w-full bg-[#06062A] sticky top-0 z-50  mx-auto px-10 rounded-b-3xl">
       <div className="flex w-full justify-between">
         <div className=" flex items-center">
-          <div>
-            <h2 className="text-white text-2xl font-bold">Boost</h2>
-          </div>
+          <Link href={"/"}>
+            <div>
+              <h2 className="text-white text-2xl font-bold">Boost</h2>
+            </div>
+          </Link>
           <div className="md:flex font-mono space-x-6 ml-20 hidden text-white">
-            <h2 className="cursor-pointer">My Boosts</h2>
-            <h2 className="cursor-pointer">My Boosts</h2>
+            <a href="#nfts">
+              <h2 className="cursor-pointer">Boosts</h2>
+            </a>
             <h2 className="cursor-pointer">Minted NFTs</h2>
+            <h2 className="cursor-pointer">Referrals</h2>
           </div>
         </div>
 
