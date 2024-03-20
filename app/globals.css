@@ -87,6 +87,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground  bg-gradient-to-t from-slate-900 via-purple-900 to-slate-900;
   }
 }

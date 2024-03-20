@@ -6,11 +6,25 @@ import { ethers } from "ethers";
 import { useWeb3Modal } from "@web3modal/ethers/react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import Dropdown from "./Dropdown";
+import Link from "next/link";
 
 function Navbar() {
   const { walletAddress, setwalletAddress } = useContext(AppContext);
   const { open, close } = useWeb3Modal();
   const { address, chainId, isConnected } = useWeb3ModalAccount();
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    // first prevent the default behavior
+    e.preventDefault();
+    // get the href and remove everything before the hash (#)
+    const href = e.currentTarget.href;
+    const targetId = href.replace(/.*\#/, "");
+    // get the element by id and use scrollIntoView
+    const elem = document.getElementById(targetId);
+    elem?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
 
   function truncateWalletAddress(
     walletAddress: any,
@@ -42,16 +56,24 @@ function Navbar() {
   }, []);
 
   return (
-    <div className="p-5 flex w-full bg-[#06062A]  mx-auto px-10 rounded-b-3xl">
+    <div className="p-5 flex w-full bg-[#06062A] sticky top-0 z-50  mx-auto px-10 rounded-b-3xl">
       <div className="flex w-full justify-between">
         <div className=" flex items-center">
-          <div>
-            <h2 className="text-white text-2xl font-bold">Boost</h2>
-          </div>
+          <Link href={"/"}>
+            <div>
+              <h2 className="text-white text-2xl font-bold">Boost</h2>
+            </div>
+          </Link>
           <div className="md:flex font-mono space-x-6 ml-20 hidden text-white">
-            <h2 className="cursor-pointer">My Boosts</h2>
-            <h2 className="cursor-pointer">My Boosts</h2>
-            <h2 className="cursor-pointer">Minted NFTs</h2>
+            <Link onClick={handleScroll} href="#nfts">
+              <h2 className="cursor-pointer">Home</h2>
+            </Link>
+            <Link href={"/mints"}>
+              <h2 className="cursor-pointer">Minted</h2>
+            </Link>
+            <Link href={"/my-boosts"}>
+              <h2 className="cursor-pointer">My Boosts</h2>
+            </Link>
           </div>
         </div>
 

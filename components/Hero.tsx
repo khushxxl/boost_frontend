@@ -1,35 +1,60 @@
 "use client";
 import { AppContext } from "@/context/AppContext";
+import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useState } from "react";
 import Marquee from "react-fast-marquee";
+import { nftData } from "../utils/constants.js";
 
 function Hero() {
   const options = [2, 5, 10, 15, 20];
-  const [quantity, setquantity] = useState<number>(5);
+  const [quantity, setquantity] = useState<any>(0);
+
+  const [selectedNFTs, setselectedNFTs] = useState<any[]>([]);
 
   const { chainSelected } = useContext(AppContext);
 
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setquantity(parseInt(event.target.value, 10));
+    const value = parseInt(event.target.value, 10);
+    setquantity(value);
+    setselectedNFTs(nftData.slice(0, value)); // Automatically select NFTs based on the slider value
   };
 
   const handleNumberInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setquantity(parseInt(event.target.value, 10));
+    const value = parseInt(event.target.value, 10);
+    setquantity(value);
+    setselectedNFTs(nftData.slice(0, value));
   };
 
-  const MarqueeComponent = () => {
+  const handleNFTClick = (data: any) => {
+    if (checkIfSelected(data)) {
+      // If already selected, remove it from selectedNFTs
+      setselectedNFTs(selectedNFTs.filter((nft) => nft.id !== data.id));
+      if (quantity != 0) {
+        setquantity(quantity - 1);
+      }
+    } else {
+      // If not selected, add it to selectedNFTs
+      setselectedNFTs([...selectedNFTs, data]);
+      setquantity(quantity + 1);
+    }
+  };
+  const checkIfSelected = (data: any) => {
+    return selectedNFTs.some((selectedNFT) => selectedNFT.id === data.id);
+  };
+
+  const MarqueeComponent: any = () => {
     return (
-      <div className="white-glassmorphism rounded-xl mr-20 flex items-center justify-center ">
+      <div className="white-glassmorphism rounded-xl mr-20 p-2 flex items-center justify-center ">
         <div>
           <Image
             src={
               "https://i.seadn.io/gae/yIWUh-VKgOUlHYQNxdGCwiGQ-Bl0u58FfzEpEEAfTmbPNw1-uZGlbnkBGUuCaFdbIDKzRpryQhUWWIvBbZrB7TDCVMmtkib_GWnvNQ?auto=format&dpr=1&w=640"
             }
-            width={200}
-            height={200}
+            width={280}
+            height={400}
             alt="vdf"
             className="rounded"
           />
@@ -40,10 +65,19 @@ function Hero() {
 
   //   https://hypercolor.dev/
   return (
-    <div className="flex flex-col   h-screen bg-gradient-to-t from-slate-900 via-purple-900 to-slate-900">
+    <div className="flex flex-col ">
       <div className="flex flex-col items-center mt-20">
-        <div>
-          <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wide bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
+        <div className="mt-10 max-w-lg md:max-w-full">
+          <Marquee className="">
+            <MarqueeComponent />
+            <MarqueeComponent />
+            <MarqueeComponent />
+            <MarqueeComponent />
+            <MarqueeComponent />
+          </Marquee>
+        </div>
+        <div className="mt-20">
+          <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
             Boost on {chainSelected ? chainSelected : "ZkSync"}
           </h1>
         </div>
@@ -62,7 +96,7 @@ function Hero() {
               className="w-[350px] bg-white"
               value={quantity}
               onChange={handleRangeChange}
-              max={20}
+              max={nftData.length}
               min={1}
             />
           </div>
@@ -73,7 +107,7 @@ function Hero() {
               color="red"
               className="bg-white w-10 focus:outline-none rounded-sm text-center"
               value={quantity}
-              min={1}
+              min={0}
               onChange={handleNumberInputChange}
             />
             {options.map((data, i) => {
@@ -81,7 +115,7 @@ function Hero() {
                 <div
                   key={i}
                   onClick={() => setquantity(data)}
-                  className="p-[5px] bg-gray-600 cursor-pointer rounded-sm"
+                  className="p-[10px] bg-gray-600 h-7 w-7 rounded-full cursor-pointer flex items-center justify-center"
                 >
                   <p className="text-white">{data}</p>
                 </div>
@@ -91,15 +125,53 @@ function Hero() {
         </div>
       </div>
 
-      <div className="mt-32">
-        <Marquee className="">
-          <MarqueeComponent />
-          <MarqueeComponent />
-          <MarqueeComponent />
-          <MarqueeComponent />
-          <MarqueeComponent />
-        </Marquee>
-      </div>
+      <section
+        id="#nfts"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  max-w-7xl min-w-max gap-x-10 mx-auto place-items-center"
+      >
+        {nftData.map((data, i) => {
+          return (
+            <div
+              className="mt-10 bg-[#17173C] p-5 rounded-2xl transition-all transform hover:scale-105 duration-150"
+              key={i}
+              onClick={() => {}}
+            >
+              <div onClick={() => handleNFTClick(data)}>
+                <Image
+                  height={300}
+                  width={220}
+                  alt=""
+                  className={`rounded-2xl cursor-pointer ${
+                    checkIfSelected(data) ? `grayscale-[100%]` : `grayscale-0`
+                  }      `}
+                  src={require("../assets/zkStars.png")}
+                />
+                {checkIfSelected(data) && (
+                  <div className="bg-black p-2 rounded-full top-6 ml-2  w-fit absolute">
+                    <CheckCircle color="white" size={15} />
+                  </div>
+                )}
+              </div>
+              <h1 className="text-white font-bold text-sm mt-2 ml-2">
+                Boost #000{i + 1}
+              </h1>
+              <div className="bg-[#292956] mt-5 p-2 rounded-md flex justify-between">
+                <div className="">
+                  <h1 className="text-xs font-semibold text-gray-400">Price</h1>
+                  <h1 className=" font-sans font-bold text-white text-sm">
+                    0.0001 ETH
+                  </h1>
+                </div>
+                <div className="bg-[#5A5A90] mr-4 text-center  cursor-pointer flex justify-center items-center px-5 rounded-lg">
+                  <h1 className="font-semibold text-white tracking-wide">
+                    Mint
+                  </h1>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 }
