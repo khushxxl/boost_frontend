@@ -13,6 +13,19 @@ function Navbar() {
   const { open, close } = useWeb3Modal();
   const { address, chainId, isConnected } = useWeb3ModalAccount();
 
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    // first prevent the default behavior
+    e.preventDefault();
+    // get the href and remove everything before the hash (#)
+    const href = e.currentTarget.href;
+    const targetId = href.replace(/.*\#/, "");
+    // get the element by id and use scrollIntoView
+    const elem = document.getElementById(targetId);
+    elem?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   function truncateWalletAddress(
     walletAddress: any,
     startLength = 6,
@@ -52,11 +65,15 @@ function Navbar() {
             </div>
           </Link>
           <div className="md:flex font-mono space-x-6 ml-20 hidden text-white">
-            <a href="#nfts">
-              <h2 className="cursor-pointer">Boosts</h2>
-            </a>
-            <h2 className="cursor-pointer">Minted NFTs</h2>
-            <h2 className="cursor-pointer">Referrals</h2>
+            <Link onClick={handleScroll} href="#nfts">
+              <h2 className="cursor-pointer">Home</h2>
+            </Link>
+            <Link href={"/mints"}>
+              <h2 className="cursor-pointer">Minted</h2>
+            </Link>
+            <Link href={"/my-boosts"}>
+              <h2 className="cursor-pointer">My Boosts</h2>
+            </Link>
           </div>
         </div>
 

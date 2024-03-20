@@ -4,40 +4,13 @@ import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useState } from "react";
 import Marquee from "react-fast-marquee";
+import { nftData } from "../utils/constants.js";
 
 function Hero() {
   const options = [2, 5, 10, 15, 20];
   const [quantity, setquantity] = useState<any>(0);
 
   const [selectedNFTs, setselectedNFTs] = useState<any[]>([]);
-
-  const nftData = [
-    {
-      id: 1,
-      name: "fmekfm",
-      img: require("../assets/zkStars.png"),
-    },
-    {
-      id: 2,
-      name: "cknlekn",
-      img: require("../assets/zkStars.png"),
-    },
-    {
-      id: 3,
-      name: "fmwkdnwdekfm",
-      img: require("../assets/zkStars.png"),
-    },
-    {
-      id: 4,
-      name: "fmeddekfm",
-      img: require("../assets/zkStars.png"),
-    },
-    {
-      id: 5,
-      name: "dkemdkl",
-      img: require("../assets/zkStars.png"),
-    },
-  ];
 
   const { chainSelected } = useContext(AppContext);
 
@@ -94,7 +67,16 @@ function Hero() {
   return (
     <div className="flex flex-col ">
       <div className="flex flex-col items-center mt-20">
-        <div>
+        <div className="mt-10 max-w-lg md:max-w-full">
+          <Marquee className="">
+            <MarqueeComponent />
+            <MarqueeComponent />
+            <MarqueeComponent />
+            <MarqueeComponent />
+            <MarqueeComponent />
+          </Marquee>
+        </div>
+        <div className="mt-20">
           <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
             Boost on {chainSelected ? chainSelected : "ZkSync"}
           </h1>
@@ -143,21 +125,13 @@ function Hero() {
         </div>
       </div>
 
-      <div className="mt-32">
-        <Marquee className="">
-          <MarqueeComponent />
-          <MarqueeComponent />
-          <MarqueeComponent />
-          <MarqueeComponent />
-          <MarqueeComponent />
-        </Marquee>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  max-w-7xl min-w-max gap-x-10 mx-auto place-items-center">
+      <section
+        id="#nfts"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  max-w-7xl min-w-max gap-x-10 mx-auto place-items-center"
+      >
         {nftData.map((data, i) => {
           return (
             <div
-              id="#nfts"
               className="mt-10 bg-[#17173C] p-5 rounded-2xl transition-all transform hover:scale-105 duration-150"
               key={i}
               onClick={() => {}}
@@ -197,7 +171,7 @@ function Hero() {
             </div>
           );
         })}
-      </div>
+      </section>
     </div>
   );
 }

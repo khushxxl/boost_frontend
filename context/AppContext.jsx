@@ -12,8 +12,13 @@ function AppProvider({ children }) {
     { img: require("../assets/base.svg"), chain: "Base" },
     { img: require("../assets/scroll.svg"), chain: "Scroll" },
     { img: require("../assets/starknet.svg"), chain: "Starknet" },
+    { img: require("../assets/linea.svg"), chain: "Linea" },
   ];
+
   const [chainSelected, setchainSelected] = useState(null);
+  const [myBoostsChain, setmyBoostsChain] = useState(
+    options[options.length - 1]
+  );
 
   return (
     <AppContext.Provider
@@ -23,6 +28,8 @@ function AppProvider({ children }) {
         options,
         chainSelected,
         setchainSelected,
+        myBoostsChain,
+        setmyBoostsChain,
       }}
     >
       {children}
