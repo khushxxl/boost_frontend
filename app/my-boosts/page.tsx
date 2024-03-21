@@ -55,7 +55,7 @@ function MyBoosts() {
   };
 
   return (
-    <div className="h-screen">
+    <div className="">
       <div className="mt-20 flex flex-col md:flex-row justify-center items-center">
         <h1 className="text-5xl md:mr-5  text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
           My Boosts on

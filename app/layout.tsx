@@ -4,6 +4,7 @@ import "./globals.css";
 import AppProvider from "../context/AppContext.jsx";
 import { Web3ModalProvider } from "../context/Web3Modal";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
             <Navbar />
 
             {children}
+            <Footer />
           </body>
         </Web3ModalProvider>
       </AppProvider>
