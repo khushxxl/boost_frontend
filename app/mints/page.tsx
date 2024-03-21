@@ -6,7 +6,7 @@ import { nftData } from "../../utils/constants.js";
 
 function MyMints() {
   return (
-    <div className="h-screen">
+    <div className="">
       <div className="mt-20">
         <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
           My Mints

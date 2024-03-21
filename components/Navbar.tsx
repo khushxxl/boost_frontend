@@ -13,17 +13,16 @@ function Navbar() {
   const { open, close } = useWeb3Modal();
   const { address, chainId, isConnected } = useWeb3ModalAccount();
 
-  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    // first prevent the default behavior
-    e.preventDefault();
-    // get the href and remove everything before the hash (#)
-    const href = e.currentTarget.href;
-    const targetId = href.replace(/.*\#/, "");
-    // get the element by id and use scrollIntoView
-    const elem = document.getElementById(targetId);
-    elem?.scrollIntoView({
-      behavior: "smooth",
-    });
+  const scrollToNFTs = () => {
+    const nftsSection = document.getElementById("nfts");
+    if (nftsSection) {
+      const windowHeight = window.innerHeight;
+      const nftsSectionTop = nftsSection.getBoundingClientRect().top;
+      const nftsSectionHeight = nftsSection.clientHeight;
+      const scrollToMiddle =
+        nftsSectionTop - (windowHeight - nftsSectionHeight) / 2;
+      window.scrollTo({ top: scrollToMiddle, behavior: "smooth" });
+    }
   };
 
   function truncateWalletAddress(
@@ -65,7 +64,7 @@ function Navbar() {
             </div>
           </Link>
           <div className="md:flex font-mono space-x-6 ml-20 hidden text-white">
-            <Link onClick={handleScroll} href="#nfts">
+            <Link onClick={scrollToNFTs} href="/#nfts">
               <h2 className="cursor-pointer">Home</h2>
             </Link>
             <Link href={"/mints"}>
