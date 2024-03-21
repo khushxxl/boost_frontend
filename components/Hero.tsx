@@ -68,7 +68,7 @@ function Hero() {
   return (
     <div className="flex flex-col ">
       <div className="flex flex-col items-center mt-20">
-        <div className="mt-10 max-w-lg md:max-w-full">
+        <div className="mt-10 max-w-sm md:max-w-full">
           <Marquee className="">
             {nftData.map((data, i) => {
               return <MarqueeComponent data={data} key={i} />;
