@@ -4,6 +4,7 @@ import Image from "next/image";
 
 export default function Home() {
   // bg - [url("../assets/bgGradient.png")];
+
   return (
     <main className="flex flex-col">
       <Hero />

@@ -1,3 +1,4 @@
+"use client";
 import { Send } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +12,7 @@ function Footer() {
           Our Socials
         </h1>
         <div className="mt-5 flex items-center space-x-10">
-          <Link href={"https://x.com/boostitup_w?s=21"} target="_">
+          <Link href={"https://x.com/boostitup_w?s=21"} target="_blank">
             <Image
               alt="twitter"
               height={50}

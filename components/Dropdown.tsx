@@ -1,4 +1,3 @@
-"use client";
 import React, { useContext, useState } from "react";
 import {
   DropdownMenu,
@@ -11,9 +10,11 @@ import {
 import { AppContext } from "@/context/AppContext";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { lineaNFTS, nftData, zksyncNFTS } from "@/utils/constants";
 
 function Dropdown() {
-  const { options, chainSelected, setchainSelected } = useContext(AppContext);
+  const { options, chainSelected, setchainSelected, setnftsToUse } =
+    useContext(AppContext);
   //   const options = ["ZkSync", "Base", "Scroll", "Starknet"];
 
   const [optionSelected, setoptionSelected] = useState(options[0]);
@@ -29,7 +30,20 @@ function Dropdown() {
           return (
             <DropdownMenuItem
               className="hover:bg-slate-800"
-              onClick={() => setchainSelected(data.chain)}
+              onClick={() => {
+                setchainSelected(data.chain);
+                console.log(chainSelected);
+
+                if (data.chain == "Base") {
+                  setnftsToUse(nftData);
+                }
+                if (data.chain == "Linea") {
+                  setnftsToUse(lineaNFTS);
+                }
+                if (data.chain == "ZkSync") {
+                  setnftsToUse(zksyncNFTS);
+                }
+              }}
               key={i}
             >
               <div className="flex items-center cursor-pointer">
