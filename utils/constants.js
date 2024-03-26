@@ -1,3 +1,6 @@
+import NFTAbi from "./NFTabi.json";
+export const abi = NFTAbi.abi;
+
 export const nftData = [
   {
     id: 1,

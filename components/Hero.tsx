@@ -4,9 +4,11 @@ import { CheckCircle, Send } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Marquee from "react-fast-marquee";
+import { BrowserProvider, ethers } from "ethers";
 
 import Link from "next/link";
-import { lineaNFTS } from "@/utils/constants";
+import { abi, lineaNFTS, zksyncNFTS } from "@/utils/constants";
+import { useWeb3ModalProvider } from "@web3modal/ethers/react";
 
 function Hero() {
   const options = [2, 5, 10, 15, 20, 25, 30];
@@ -16,8 +18,85 @@ function Hero() {
 
   const [selectedNFTs, setselectedNFTs] = useState<any[]>([]);
 
-  const { chainSelected, nftsToUse, setnftsToUse } = useContext(AppContext);
+  const { chainSelected, nftsToUse, setnftsToUse, baseNfts, setbaseNfts } =
+    useContext(AppContext);
 
+  const { walletProvider } = useWeb3ModalProvider();
+
+  const changeId = async () => {
+    if (chainSelected == "Linea") {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          {
+            chainId: "0xe708",
+          },
+        ],
+      });
+    }
+    if (chainSelected == "Base") {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          {
+            chainId: "0x20f5",
+          },
+        ],
+      });
+    }
+    if (chainSelected == "Zksync") {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          {
+            chainId: "0x144",
+          },
+        ],
+      });
+    }
+  };
+  const getNFTData = async () => {
+    const arr: any = [];
+
+    for (let index = 1; index < 31; index++) {
+      const res = await fetch(
+        `https://bafybeidqzwqewp6tx2qlhpteoupxcot6ct3psdtqzrr7ahffaf2rf5es2e.ipfs.dweb.link/${index}.json`
+      );
+      await res.json().then((nft) => arr.push(nft));
+    }
+    setnftsToUse(arr);
+  };
+
+  const zkSyncMainnet = {
+    chainId: 100,
+    name: "zkSync",
+    currency: "ETH",
+    explorerUrl: "https://zkscan.io",
+    rpcUrl: "https://rpc.zksync.io",
+  };
+
+  const mintNFT = async () => {
+    const contractAddress = "0x3A2d7E010784Ac3966e4b82407347CA289AEB8D9"; // Address of your contract
+    const provider = new BrowserProvider(walletProvider);
+
+    // Connect to the contract
+    const signer = await provider.getSigner();
+
+    const contract = new ethers.Contract(contractAddress, abi, provider);
+
+    try {
+      const transaction = await contract.connect(signer).safeMint(); // Replace "yourFunctionName" with the actual function name
+
+      const transactionResponse = await signer.sendTransaction({
+        to: transaction.to,
+        value: ethers.parseEther("0.0001"), // Value in Ether
+      });
+
+      console.log("Transaction sent:", transactionResponse.hash);
+    } catch (error) {
+      console.error("Error executing function:", error);
+    }
+  };
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
     setquantity(value);
@@ -35,7 +114,7 @@ function Hero() {
   const handleNFTClick = (data: any) => {
     if (checkIfSelected(data)) {
       // If already selected, remove it from selectedNFTs
-      setselectedNFTs(selectedNFTs.filter((nft) => nft.id !== data.id));
+      setselectedNFTs(selectedNFTs.filter((nft) => nft.image !== data.image));
       if (quantity != 0) {
         setquantity(quantity - 1);
       }
@@ -46,25 +125,42 @@ function Hero() {
     }
   };
   const checkIfSelected = (data: any) => {
-    return selectedNFTs.some((selectedNFT) => selectedNFT.id === data.id);
+    return selectedNFTs.some((selectedNFT) => selectedNFT.image === data.image);
   };
 
-  // const checkNFTToUse = () => {
-  //   if (chainSelected == "Linea") {
-  //     console.log(chainSelected);
-  //   }
-  // };
+  const getBaseNFTData = async () => {
+    const arr: any = [];
 
-  // useEffect(() => {
-  //   checkNFTToUse();
-  // }, [nftsToUse, setnftsToUse]);
+    for (let index = 1; index < 31; index++) {
+      const res = await fetch(
+        `https://bafybeidqzwqewp6tx2qlhpteoupxcot6ct3psdtqzrr7ahffaf2rf5es2e.ipfs.dweb.link/${index}.json`
+      );
+      await res.json().then((nft) => arr.push(nft));
+    }
+    setbaseNfts(arr);
+    setnftsToUse(arr);
+  };
+
+  useEffect(() => {
+    if (chainSelected == "Base") {
+      getBaseNFTData();
+    }
+    if (chainSelected == "Linea") {
+      setnftsToUse(lineaNFTS);
+    }
+    if (chainSelected == "ZkSync") {
+      setnftsToUse(zksyncNFTS);
+    } else {
+      setnftsToUse(lineaNFTS);
+    }
+  }, [chainSelected]);
 
   const MarqueeComponent: any = ({ data }: { data: any }) => {
     return (
       <div className="white-glassmorphism rounded-md mr-20 p-2 flex items-center justify-center ">
         <div>
           <Image
-            src={data?.img}
+            src={data?.image ? data?.image : data?.img}
             width={280}
             height={400}
             alt={data?.name}
@@ -74,6 +170,9 @@ function Hero() {
       </div>
     );
   };
+  // useEffect(() => {
+  //   // getNFTData();
+  // }, []);
 
   //   https://hypercolor.dev/
   return (
@@ -81,7 +180,7 @@ function Hero() {
       <div className="flex flex-col items-center mt-20">
         <div className="mt-10 max-w-sm md:max-w-full">
           <Marquee className="">
-            {nftsToUse.map((data, i) => {
+            {nftsToUse?.map((data: any, i: number) => {
               return <MarqueeComponent data={data} key={i} />;
             })}
           </Marquee>
@@ -144,7 +243,7 @@ function Hero() {
       </div>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  max-w-7xl min-w-max gap-x-10 mx-auto place-items-center">
-        {nftsToUse.map((data: any, i: number) => {
+        {nftsToUse?.map((data: any, i: number) => {
           return (
             <div
               className="mt-10 bg-[#17173C] p-5 rounded-2xl transition-all transform hover:scale-105 duration-150"
@@ -159,7 +258,7 @@ function Hero() {
                   className={`rounded-2xl cursor-pointer ${
                     checkIfSelected(data) ? `grayscale-[100%]` : `grayscale-0`
                   }      `}
-                  src={data?.img}
+                  src={data?.image ? data?.image : data?.img}
                 />
                 {checkIfSelected(data) && (
                   <div className="bg-black p-2 rounded-full top-6 ml-2  w-fit absolute">
@@ -174,10 +273,13 @@ function Hero() {
                 <div className="">
                   <h1 className="text-xs font-semibold text-gray-400">Price</h1>
                   <h1 className=" font-sans font-bold text-white text-sm">
-                    {data?.price} ETH
+                    0.0001 ETH
                   </h1>
                 </div>
-                <div className="bg-[#5A5A90] mr-4 text-center  cursor-pointer flex justify-center items-center px-5 rounded-lg">
+                <div
+                  onClick={mintNFT}
+                  className="bg-[#5A5A90] mr-4 text-center  cursor-pointer flex justify-center items-center px-5 rounded-lg"
+                >
                   <h1 className="font-semibold text-white tracking-wide">
                     Mint
                   </h1>

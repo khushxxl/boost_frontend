@@ -1,8 +1,6 @@
 "use client";
 import { AppContext } from "@/context/AppContext";
 import React, { useContext, useEffect } from "react";
-import Web3Modal from "web3modal";
-import { ethers } from "ethers";
 import { useWeb3Modal } from "@web3modal/ethers/react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import Dropdown from "./Dropdown";
@@ -18,7 +16,7 @@ import {
 import { ChevronDown, MenuIcon } from "lucide-react";
 
 function Navbar() {
-  const { walletAddress, setwalletAddress, setnftsToUse } =
+  const { walletAddress, setwalletAddress, setnftsToUse, chainID, setchainID } =
     useContext(AppContext);
   const { open, close } = useWeb3Modal();
   const { address, chainId, isConnected } = useWeb3ModalAccount();
@@ -46,7 +44,7 @@ function Navbar() {
       walletAddress.length < startLength + endLength
     ) {
       console.error("Invalid wallet address or length parameters");
-      return walletAddress;
+      return walletAddress + "Chain" + chainId;
     }
 
     // Truncate and add ellipsis
@@ -88,6 +86,7 @@ function Navbar() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
+            <h1> {chainId} </h1>
             <div
               onClick={connectWallet}
               className="bg-gradient-to-r from-purple-500 to-pink-500  p-2 w-36 rounded-md text-white text-center cursor-pointer"
@@ -125,7 +124,7 @@ function Navbar() {
             </div>
             <div
               onClick={connectWallet}
-              className="bg-gradient-to-r from-purple-500 to-pink-500  p-2 w-36 rounded-md text-white text-center cursor-pointer hidden md:flex"
+              className="bg-gradient-to-r from-purple-500 to-pink-500  p-2 w-36 rounded-md text-white text-center cursor-pointer hidden md:flex items-center justify-center"
             >
               <p className="text-center">
                 {isConnected
