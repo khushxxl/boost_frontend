@@ -1,15 +1,23 @@
 "use client";
 import { AppContext } from "@/context/AppContext";
 import React, { useContext, useEffect } from "react";
-import Web3Modal from "web3modal";
-import { ethers } from "ethers";
 import { useWeb3Modal } from "@web3modal/ethers/react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import Dropdown from "./Dropdown";
 import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, MenuIcon } from "lucide-react";
 
 function Navbar() {
-  const { walletAddress, setwalletAddress } = useContext(AppContext);
+  const { walletAddress, setwalletAddress, setnftsToUse, chainID, setchainID } =
+    useContext(AppContext);
   const { open, close } = useWeb3Modal();
   const { address, chainId, isConnected } = useWeb3ModalAccount();
 
@@ -36,7 +44,7 @@ function Navbar() {
       walletAddress.length < startLength + endLength
     ) {
       console.error("Invalid wallet address or length parameters");
-      return walletAddress;
+      return walletAddress + "Chain" + chainId;
     }
 
     // Truncate and add ellipsis
@@ -54,6 +62,46 @@ function Navbar() {
     // connectWallet();
   }, []);
 
+  function NavDrop() {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <MenuIcon color="white" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-slate-900 font-mono border-2 border-gray-400 text-white">
+          <DropdownMenuItem>
+            <Link onClick={scrollToNFTs} href="/#nfts">
+              <h2 className="cursor-pointer">Home</h2>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href={"/mints"}>
+              <h2 className="cursor-pointer">Minted</h2>
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link href={"/my-boosts"}>
+              <h2 className="cursor-pointer">My Boosts</h2>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <h1> {chainId} </h1>
+            <div
+              onClick={connectWallet}
+              className="bg-gradient-to-r from-purple-500 to-pink-500  p-2 w-36 rounded-md text-white text-center cursor-pointer"
+            >
+              <p className="text-center">
+                {isConnected
+                  ? truncateWalletAddress(address)
+                  : "Connect Wallet"}
+              </p>
+            </div>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
   return (
     <div className="p-5 flex w-full bg-[#06062A] sticky top-0 z-50  mx-auto px-10 rounded-b-3xl">
       <div className="flex w-full justify-between">
@@ -63,30 +111,27 @@ function Navbar() {
               <h2 className="text-white text-2xl font-bold">Boost</h2>
             </div>
           </Link>
-          <div className="md:flex font-mono space-x-6 ml-20 hidden text-white">
-            <Link onClick={scrollToNFTs} href="/#nfts">
-              <h2 className="cursor-pointer">Home</h2>
-            </Link>
-            <Link href={"/mints"}>
-              <h2 className="cursor-pointer">Minted</h2>
-            </Link>
-            <Link href={"/my-boosts"}>
-              <h2 className="cursor-pointer">My Boosts</h2>
-            </Link>
-          </div>
         </div>
 
-        <div className="flex items-center">
-          <div className="mr-10 hidden md:flex">
+        <div className=" flex items-center">
+          <div className="mr-10 flex">
             <Dropdown />
           </div>
-          <div
-            onClick={connectWallet}
-            className="bg-gradient-to-r from-purple-500 to-pink-500  p-2 w-36 rounded-md text-white text-center cursor-pointer"
-          >
-            <p className="text-center">
-              {isConnected ? truncateWalletAddress(address) : "Connect Wallet"}
-            </p>
+
+          <div>
+            <div className="md:hidden">
+              <NavDrop />
+            </div>
+            <div
+              onClick={connectWallet}
+              className="bg-gradient-to-r from-purple-500 to-pink-500  p-2 w-36 rounded-md text-white text-center cursor-pointer hidden md:flex items-center justify-center"
+            >
+              <p className="text-center">
+                {isConnected
+                  ? truncateWalletAddress(address)
+                  : "Connect Wallet"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
