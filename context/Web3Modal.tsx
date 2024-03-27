@@ -42,7 +42,7 @@ const baseMainnet = {
 
 // 3. Create modal
 const metadata = {
-  name: "My Website",
+  name: "Boost It",
   description: "My Website description",
   url: "https://mywebsite.com", // origin must match your domain & subdomain
   icons: ["https://avatars.mywebsite.com/"],

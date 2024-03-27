@@ -79,18 +79,21 @@ function Hero() {
     const contractAddress = "0x3A2d7E010784Ac3966e4b82407347CA289AEB8D9"; // Address of your contract
     const provider = new BrowserProvider(walletProvider);
 
-    // Connect to the contract
     const signer = await provider.getSigner();
 
     const contract = new ethers.Contract(contractAddress, abi, provider);
-
+    const gasLimit = 500000;
     try {
-      const transaction = await contract.connect(signer).safeMint(); // Replace "yourFunctionName" with the actual function name
+      const transaction = await contract.connect(signer).safeMint({ gasLimit }); // Replace "yourFunctionName" with the actual function name
 
       const transactionResponse = await signer.sendTransaction({
         to: transaction.to,
         value: ethers.parseEther("0.0001"), // Value in Ether
+        gasLimit: gasLimit,
+        nonce: undefined,
       });
+
+      await transaction.wait();
 
       console.log("Transaction sent:", transactionResponse.hash);
     } catch (error) {
