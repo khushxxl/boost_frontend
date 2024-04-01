@@ -36,6 +36,40 @@ function Hero({ refId }: { refId?: string }) {
 
   const { walletProvider } = useWeb3ModalProvider();
 
+  const batchMint = async () => {
+    console.log(selectedNFTs);
+    toast.loading("NFT minting in process", { id: contractAddresses[0] });
+    selectedNFTs.forEach(async (nft) => {
+      // console.log(nft.address);
+
+      const contractAddress = nft.address; // Address of your contract
+      const provider = new BrowserProvider(walletProvider);
+
+      const signer = await provider.getSigner();
+
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+      const gasLimit = 500000;
+      try {
+        const transaction = await contract
+          .connect(signer)
+          .safeMint("0xC975023c01bA06Af6f6cFa1c2711A8EDB8cd7805", {
+            value: ethers.parseEther("0.0001"),
+            gasLimit: gasLimit,
+          });
+
+        await transaction.wait();
+
+        console.log("Transaction sent:", transaction.hash);
+        toast.success("NFT minted successfully", { id: contractAddresses[0] });
+      } catch (error) {
+        toast.error("NFT minting unsuccesfull", { id: contractAddresses[0] });
+
+        console.error("Error executing function:", error);
+      }
+    });
+    toast.success("NFT minted successfully", { id: contractAddresses[0] });
+  };
+
   const mintNFT = async (nftAddress: string) => {
     toast.loading("NFT minting in process", { id: nftAddress });
     const contractAddress = nftAddress; // Address of your contract
@@ -87,7 +121,7 @@ function Hero({ refId }: { refId?: string }) {
   const handleNFTClick = (data: any) => {
     if (checkIfSelected(data)) {
       // If already selected, remove it from selectedNFTs
-      setselectedNFTs(selectedNFTs.filter((nft) => nft.image !== data.image));
+      setselectedNFTs(selectedNFTs.filter((nft) => nft.id !== data.id));
       if (quantity != 0) {
         setquantity(quantity - 1);
       }
@@ -98,20 +132,7 @@ function Hero({ refId }: { refId?: string }) {
     }
   };
   const checkIfSelected = (data: any) => {
-    return selectedNFTs.some((selectedNFT) => selectedNFT.image === data.image);
-  };
-
-  const getBaseNFTData = async () => {
-    const arr: any = [];
-
-    for (let index = 1; index < 31; index++) {
-      const res = await fetch(
-        `https://bafybeidqzwqewp6tx2qlhpteoupxcot6ct3psdtqzrr7ahffaf2rf5es2e.ipfs.dweb.link/${index}.json`
-      );
-      await res.json().then((nft) => arr.push(nft));
-    }
-    setbaseNfts(arr);
-    setnftsToUse(arr);
+    return selectedNFTs.some((selectedNFT) => selectedNFT.id === data.id);
   };
 
   const MarqueeComponent: any = ({ data }: { data: any }) => {
@@ -148,6 +169,7 @@ function Hero({ refId }: { refId?: string }) {
           </h1>
         </div>
         <div
+          onClick={batchMint}
           className="bg-gradient-to-r from-purple-500 to-pink-500 justify-center
          items-center p-2 mt-10 w-36 rounded-md text-white text-center cursor-pointer transition-all transform hover:scale-110"
         >
@@ -162,7 +184,7 @@ function Hero({ refId }: { refId?: string }) {
               className="w-[350px] bg-white"
               value={quantity}
               onChange={handleRangeChange}
-              max={nftsToUse.length}
+              max={nftsToUse?.length}
               min={1}
             />
           </div>
@@ -170,7 +192,7 @@ function Hero({ refId }: { refId?: string }) {
             <div>
               <input
                 type="number"
-                max={nftsToUse.length}
+                max={nftsToUse?.length}
                 color="red"
                 className="bg-white w-10 mr-4 focus:outline-none rounded-sm text-center"
                 value={quantity}
