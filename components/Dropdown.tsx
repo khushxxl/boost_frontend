@@ -10,13 +10,27 @@ import {
 import { AppContext } from "@/context/AppContext";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { lineaNFTS, nftData, zksyncNFTS } from "@/utils/constants";
+import {
+  baseAddresses,
+  lineaAddresses,
+  lineaNFTS,
+  nftData,
+  zksyncNFTS,
+} from "@/utils/constants";
 import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers/react";
+import toast from "react-hot-toast";
 
 function Dropdown() {
   const [chainID, setchainID] = useState(1);
-  const { options, chainSelected, setchainSelected, setnftsToUse, baseNft } =
-    useContext(AppContext);
+  const {
+    options,
+    chainSelected,
+    setchainSelected,
+    setnftsToUse,
+    baseNft,
+    contractAddresses,
+    setcontractAddresses,
+  } = useContext(AppContext);
   //   const options = ["ZkSync", "Base", "Scroll", "Starknet"];
 
   const [optionSelected, setoptionSelected] = useState(options[0]);
@@ -48,17 +62,20 @@ function Dropdown() {
                     ],
                   });
                 }
-
                 setchainSelected(data.chain);
-                // if (data.chain == "Base") {
-                //   setnftsToUse(baseNfts);
-                // }
-                // if (data.chain == "Linea") {
-                //   setnftsToUse(lineaNFTS);
-                // }
-                // if (data.chain == "ZkSync") {
-                //   setnftsToUse(zksyncNFTS);
-                // }
+                toast(`Network Changed to  ${data.chain}`, { icon: "✅" });
+
+                if (data.chain == "Base") {
+                  setnftsToUse(nftData);
+                  setcontractAddresses(baseAddresses);
+                }
+                if (data.chain == "Linea") {
+                  setnftsToUse(lineaNFTS);
+                  setcontractAddresses(lineaAddresses);
+                }
+                if (data.chain == "ZkSync") {
+                  setnftsToUse(zksyncNFTS);
+                }
               }}
               key={i}
             >

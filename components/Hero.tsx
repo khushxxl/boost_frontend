@@ -4,79 +4,41 @@ import { CheckCircle, Send } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Marquee from "react-fast-marquee";
-import { BrowserProvider, ethers } from "ethers";
+import { BrowserProvider, ethers, id } from "ethers";
 
 import Link from "next/link";
-import { abi, lineaNFTS, zksyncNFTS } from "@/utils/constants";
+import {
+  abi,
+  baseAddresses,
+  lineaNFTS,
+  nftData,
+  zksyncNFTS,
+} from "@/utils/constants";
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
+import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
-function Hero() {
+function Hero({ refId }: { refId?: string }) {
   const options = [2, 5, 10, 15, 20, 25, 30];
   const [quantity, setquantity] = useState<any>(0);
 
-  const nftsSectionRef = useRef<HTMLDivElement>(null); // Ref for the NFTs section
-
   const [selectedNFTs, setselectedNFTs] = useState<any[]>([]);
 
-  const { chainSelected, nftsToUse, setnftsToUse, baseNfts, setbaseNfts } =
-    useContext(AppContext);
+  const {
+    chainSelected,
+    nftsToUse,
+    setnftsToUse,
+    baseNfts,
+    setbaseNfts,
+    contractAddresses,
+    setcontractAddresses,
+  } = useContext(AppContext);
 
   const { walletProvider } = useWeb3ModalProvider();
 
-  const changeId = async () => {
-    if (chainSelected == "Linea") {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [
-          {
-            chainId: "0xe708",
-          },
-        ],
-      });
-    }
-    if (chainSelected == "Base") {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [
-          {
-            chainId: "0x20f5",
-          },
-        ],
-      });
-    }
-    if (chainSelected == "Zksync") {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [
-          {
-            chainId: "0x144",
-          },
-        ],
-      });
-    }
-  };
-  const getNFTData = async () => {
-    const arr: any = [];
-
-    for (let index = 1; index < 31; index++) {
-      const res = await fetch(
-        `https://bafybeidqzwqewp6tx2qlhpteoupxcot6ct3psdtqzrr7ahffaf2rf5es2e.ipfs.dweb.link/${index}.json`
-      );
-      await res.json().then((nft) => arr.push(nft));
-    }
-    setnftsToUse(arr);
-  };
-
-  const zkSyncMainnet = {
-    chainId: 100,
-    name: "zkSync",
-    currency: "ETH",
-    explorerUrl: "https://zkscan.io",
-    rpcUrl: "https://rpc.zksync.io",
-  };
-
-  const mintNFT = async () => {
-    const contractAddress = "0x3A2d7E010784Ac3966e4b82407347CA289AEB8D9"; // Address of your contract
+  const mintNFT = async (nftAddress: string) => {
+    toast.loading("NFT minting in process", { id: nftAddress });
+    const contractAddress = nftAddress; // Address of your contract
     const provider = new BrowserProvider(walletProvider);
 
     const signer = await provider.getSigner();
@@ -84,19 +46,27 @@ function Hero() {
     const contract = new ethers.Contract(contractAddress, abi, provider);
     const gasLimit = 500000;
     try {
-      const transaction = await contract.connect(signer).safeMint({ gasLimit }); // Replace "yourFunctionName" with the actual function name
+      const transaction = await contract
+        .connect(signer)
+        .safeMint("0xC975023c01bA06Af6f6cFa1c2711A8EDB8cd7805", {
+          value: ethers.parseEther("0.0001"),
+          gasLimit: gasLimit,
+        }); // Replace "yourFunctionName" with the actual function name
 
-      const transactionResponse = await signer.sendTransaction({
-        to: transaction.to,
-        value: ethers.parseEther("0.0001"), // Value in Ether
-        gasLimit: gasLimit,
-        nonce: undefined,
-      });
+      // const transactionResponse = await signer.sendTransaction({
+      //   to: transaction.to,
+      //   value: ethers.parseEther("0.0001"), // Value in Ether
+      //   gasLimit: gasLimit,
+      //   nonce: undefined,
+      // });
 
       await transaction.wait();
 
-      console.log("Transaction sent:", transactionResponse.hash);
+      console.log("Transaction sent:", transaction.hash);
+      toast.success("NFT minted successfully", { id: nftAddress });
     } catch (error) {
+      toast.error("NFT minting unsuccesfull", { id: nftAddress });
+
       console.error("Error executing function:", error);
     }
   };
@@ -144,20 +114,6 @@ function Hero() {
     setnftsToUse(arr);
   };
 
-  useEffect(() => {
-    if (chainSelected == "Base") {
-      getBaseNFTData();
-    }
-    if (chainSelected == "Linea") {
-      setnftsToUse(lineaNFTS);
-    }
-    if (chainSelected == "ZkSync") {
-      setnftsToUse(zksyncNFTS);
-    } else {
-      setnftsToUse(lineaNFTS);
-    }
-  }, [chainSelected]);
-
   const MarqueeComponent: any = ({ data }: { data: any }) => {
     return (
       <div className="white-glassmorphism rounded-md mr-20 p-2 flex items-center justify-center ">
@@ -173,9 +129,6 @@ function Hero() {
       </div>
     );
   };
-  // useEffect(() => {
-  //   // getNFTData();
-  // }, []);
 
   //   https://hypercolor.dev/
   return (
@@ -191,6 +144,7 @@ function Hero() {
         <div className="mt-20">
           <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
             Boost on {chainSelected ? chainSelected : "Linea"}
+            {refId && refId}
           </h1>
         </div>
         <div
@@ -280,7 +234,9 @@ function Hero() {
                   </h1>
                 </div>
                 <div
-                  onClick={mintNFT}
+                  onClick={async () => {
+                    await mintNFT(contractAddresses[i]);
+                  }}
                   className="bg-[#5A5A90] mr-4 text-center  cursor-pointer flex justify-center items-center px-5 rounded-lg"
                 >
                   <h1 className="font-semibold text-white tracking-wide">

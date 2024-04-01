@@ -14,10 +14,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, MenuIcon } from "lucide-react";
+import toast from "react-hot-toast";
 
 function Navbar() {
-  const { walletAddress, setwalletAddress, setnftsToUse, chainID, setchainID } =
-    useContext(AppContext);
+  const {
+    walletAddress,
+    setwalletAddress,
+    setnftsToUse,
+    chainID,
+    setchainID,
+    contractAddresses,
+    setcontractAddresses,
+  } = useContext(AppContext);
   const { open, close } = useWeb3Modal();
   const { address, chainId, isConnected } = useWeb3ModalAccount();
 
@@ -86,7 +94,10 @@ function Navbar() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <h1> {chainId} </h1>
+            <Dropdown />
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
             <div
               onClick={connectWallet}
               className="bg-gradient-to-r from-purple-500 to-pink-500  p-2 w-36 rounded-md text-white text-center cursor-pointer"
@@ -111,6 +122,18 @@ function Navbar() {
               <h2 className="text-white text-2xl font-bold">Boost</h2>
             </div>
           </Link>
+          <div className="text-white hidden md:flex ml-10  items-center space-x-5 font-bold font-mono">
+            <Link href={"/"}>
+              <h2 className="cursor-pointer">NFTs</h2>
+            </Link>
+            <Link href={"/mints"}>
+              <h2 className="cursor-pointer">Mints</h2>
+            </Link>
+            <Link href={"/my-boosts"}>
+              <h2 className="cursor-pointer">My Boosts</h2>
+            </Link>
+            {/* <h1>{contractAddresses[0]}</h1> */}
+          </div>
         </div>
 
         <div className=" flex items-center">
