@@ -1,7 +1,12 @@
 "use client";
 import React, { createContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { lineaNFTS, nftData, zksyncNFTS } from "../utils/constants";
+import {
+  lineaAddresses,
+  lineaNFTS,
+  nftData,
+  zksyncNFTS,
+} from "../utils/constants";
 
 export const AppContext = createContext();
 
@@ -10,7 +15,7 @@ function AppProvider({ children }) {
 
   const [baseNfts, setbaseNfts] = useState([]);
 
-  const [nftsToUse, setnftsToUse] = useState([]);
+  const [nftsToUse, setnftsToUse] = useState(nftData);
 
   // const getBaseNFTData = async () => {
   //   const arr = [];
@@ -55,6 +60,8 @@ function AppProvider({ children }) {
   const [myBoostsChain, setmyBoostsChain] = useState(
     options[options.length - 1]
   );
+
+  const [contractAddresses, setcontractAddresses] = useState(lineaAddresses);
 
   const getBaseNFTData = async () => {
     const arr = [];
@@ -105,6 +112,8 @@ function AppProvider({ children }) {
         chainID,
         setchainID,
         changeChainId,
+        contractAddresses,
+        setcontractAddresses,
       }}
     >
       {children}

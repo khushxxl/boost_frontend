@@ -26,7 +26,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "context/AppContext.jsx"
+    "context/AppContext.jsx",
+    "components/Hero.jsx"
   ],
   "exclude": ["node_modules"]
 }

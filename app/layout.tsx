@@ -5,6 +5,8 @@ import AppProvider from "../context/AppContext.jsx";
 import { Web3ModalProvider } from "../context/Web3Modal";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import toast, { Toaster } from "react-hot-toast";
+import Referral from "@/components/Referral";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +25,11 @@ export default function RootLayout({
       <AppProvider>
         <Web3ModalProvider>
           <body className={inter.className}>
+            <Toaster />
             <Navbar />
 
             {children}
+            <Referral />
             <Footer />
           </body>
         </Web3ModalProvider>
