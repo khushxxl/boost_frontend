@@ -6,14 +6,11 @@ import {
   useSearchParams,
   useParams,
 } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import toast from "react-hot-toast";
 
 function Referrals() {
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const params = useParams();
 
   const userId: any = searchParams.get("userId");
   useEffect(() => {
@@ -30,9 +27,9 @@ function Referrals() {
     }
   }, [userId]);
   return (
-    <div>
+    <Suspense>
       <Hero refId={userId} />
-    </div>
+    </Suspense>
   );
 }
 
