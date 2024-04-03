@@ -33,9 +33,9 @@ export function FAQAccordion() {
         Frequently Asked Question
       </h1>
 
-      {boostInfo.map((data) => {
+      {boostInfo.map((data, i) => {
         return (
-          <AccordionItem value={data.question}>
+          <AccordionItem key={i} value={data.question}>
             <AccordionTrigger>{data.question}</AccordionTrigger>
             <AccordionContent>{data.answer}</AccordionContent>
           </AccordionItem>
