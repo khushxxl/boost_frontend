@@ -26,18 +26,29 @@ function Referral() {
 
   return (
     <div
-      className={`bg-slate-800 rounded-xl max-w-7xl justify-center flex  mx-auto mt-20 p-4 text-white ${
+      id="#referral"
+      className={`bg-slate-800 rounded-xl justify-center flex max-w-7xl mx-5  md:mx-auto mt-20 p-4 text-white ${
         address ? "flex-col" : "flex-row"
       }`}
     >
       {address ? (
-        <div className=" w-full">
-          <h1 className="text-2xl font-bold text-white">
+        <div className=" w-full ">
+          <h1 className="text-2xl  font-mono font-bold text-white">
             Your Personalised Referral Link
           </h1>
-          <div className="bg-[#06062A] rounded-lg flex justify-between items-center px-3 h-10 mt-5 max-w-5xl mx-auto">
+          <h1 className="text-md font-mono font-semibold text-gray-300 mt-3">
+            Refer your friends, and receive 20% of their mints, directly to your
+            wallet.
+          </h1>
+          <div
+            className="bg-[#06062A] rounded-lg truncate flex flex-col md:flex-row  justify-between  items-start p-4
+            mt-5 mx-auto"
+          >
             <h1 className="text-gray-400">{refLink}</h1>
-            <Clipboard onClick={copyToClipboard} className=" cursor-pointer" />
+            <Clipboard
+              onClick={copyToClipboard}
+              className=" cursor-pointer mt-4 md:mt-0 "
+            />
           </div>
         </div>
       ) : (

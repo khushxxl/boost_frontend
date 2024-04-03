@@ -14,13 +14,22 @@ import {
   nftData,
   zksyncNFTS,
 } from "@/utils/constants";
-import { useWeb3ModalProvider } from "@web3modal/ethers/react";
+import {
+  useWeb3Modal,
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers/react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
 function Hero({ refId }: { refId?: string }) {
   const options = [2, 5, 10, 15, 20, 25, 30];
   const [quantity, setquantity] = useState<any>(0);
+  const { address, chainId, isConnected } = useWeb3ModalAccount();
+  const { open, close } = useWeb3Modal();
+  const connectWallet = async () => {
+    open();
+  };
 
   const [selectedNFTs, setselectedNFTs] = useState<any[]>([]);
 
@@ -32,45 +41,70 @@ function Hero({ refId }: { refId?: string }) {
     setbaseNfts,
     contractAddresses,
     setcontractAddresses,
+    getBaseUserNfts,
   } = useContext(AppContext);
 
   const { walletProvider } = useWeb3ModalProvider();
+  const chainChecker = async () => {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [
+        {
+          chainId: chainSelected ? chainSelected.chainID : "0xe708",
+        },
+      ],
+    });
+  };
 
   const batchMint = async () => {
-    console.log(selectedNFTs);
-    toast.loading("NFT minting in process", { id: contractAddresses[0] });
-    selectedNFTs.forEach(async (nft) => {
-      // console.log(nft.address);
+    if (!isConnected) {
+      connectWallet();
+    }
+    if (selectedNFTs?.length > 0) {
+      await chainChecker();
+      console.log(selectedNFTs);
+      toast.loading("NFT minting in process", { id: contractAddresses[0] });
+      selectedNFTs.forEach(async (nft) => {
+        // console.log(nft.address);
 
-      const contractAddress = nft.address; // Address of your contract
-      const provider = new BrowserProvider(walletProvider);
+        const contractAddress = nft.address; // Address of your contract
+        const provider = new BrowserProvider(walletProvider);
 
-      const signer = await provider.getSigner();
+        const signer = await provider.getSigner();
 
-      const contract = new ethers.Contract(contractAddress, abi, provider);
-      const gasLimit = 500000;
-      try {
-        const transaction = await contract
-          .connect(signer)
-          .safeMint("0xC975023c01bA06Af6f6cFa1c2711A8EDB8cd7805", {
-            value: ethers.parseEther("0.0001"),
-            gasLimit: gasLimit,
+        const contract = new ethers.Contract(contractAddress, abi, provider);
+        const gasLimit = 500000;
+        try {
+          const transaction = await contract
+            .connect(signer)
+            .safeMint("0xC975023c01bA06Af6f6cFa1c2711A8EDB8cd7805", {
+              value: ethers.parseEther("0.0001"),
+              gasLimit: gasLimit,
+            });
+
+          await transaction.wait();
+
+          console.log("Transaction sent:", transaction.hash);
+          toast.success("NFT minted successfully", {
+            id: contractAddresses[0],
           });
+        } catch (error) {
+          toast.error("NFT minting unsuccesfull", { id: contractAddresses[0] });
+          setselectedNFTs([]);
 
-        await transaction.wait();
-
-        console.log("Transaction sent:", transaction.hash);
-        toast.success("NFT minted successfully", { id: contractAddresses[0] });
-      } catch (error) {
-        toast.error("NFT minting unsuccesfull", { id: contractAddresses[0] });
-
-        console.error("Error executing function:", error);
-      }
-    });
-    toast.success("NFT minted successfully", { id: contractAddresses[0] });
+          console.error("Error executing function:", error);
+        }
+      });
+    } else {
+      toast.error("No NFTs selected");
+    }
   };
 
   const mintNFT = async (nftAddress: string) => {
+    if (!isConnected) {
+      connectWallet();
+    }
+    await chainChecker();
     toast.loading("NFT minting in process", { id: nftAddress });
     const contractAddress = nftAddress; // Address of your contract
     const provider = new BrowserProvider(walletProvider);
@@ -154,6 +188,11 @@ function Hero({ refId }: { refId?: string }) {
   //   https://hypercolor.dev/
   return (
     <div className="flex flex-col ">
+      <div className="mt-20">
+        <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wide bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
+          Mint NFTS. Boost Airdrops
+        </h1>
+      </div>
       <div className="flex flex-col items-center mt-20">
         <div className="mt-10 max-w-sm md:max-w-full">
           <Marquee className="">
@@ -164,7 +203,7 @@ function Hero({ refId }: { refId?: string }) {
         </div>
         <div className="mt-20">
           <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
-            Boost on {chainSelected ? chainSelected : "Linea"}
+            Boost on {chainSelected ? chainSelected.chain : "Linea"}
             {refId && refId}
           </h1>
         </div>
@@ -174,6 +213,13 @@ function Hero({ refId }: { refId?: string }) {
          items-center p-2 mt-10 w-36 rounded-md text-white text-center cursor-pointer transition-all transform hover:scale-110"
         >
           <p className="text-center font-mono font-bold">{"Mint"}</p>
+        </div>
+        <div className="mt-10 text-white white-glassmorphism border-2 font-mono border-gray-400 p-4">
+          {refId && <h1>Referral ID: {refId}</h1>}
+          <h1>
+            Total Price of Selected NFTs:{" "}
+            {selectedNFTs.reduce((total, obj) => total + obj.price, 0)}
+          </h1>
         </div>
         <div className="mt-10 flex flex-col md:flex-row items-center space-y-5 md:space-x-5 md:space-y-0">
           <div className="border-[0.5px] p-4 rounded-md items-center flex white-glassmorphism">

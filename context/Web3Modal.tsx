@@ -39,6 +39,13 @@ const baseMainnet = {
   explorerUrl: "https://basescan.org",
   rpcUrl: "https://base.llamarpc.com",
 };
+const zoraMainnet = {
+  chainId: 7777777,
+  name: "Zora",
+  currency: "ETH",
+  explorerUrl: "https://explorer.zora.energy",
+  rpcUrl: "https://rpc.zora.energy",
+};
 
 // 3. Create modal
 const metadata = {
@@ -50,7 +57,7 @@ const metadata = {
 
 createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
-  chains: [mainnet, zkSyncMainnet, lineaMainnet, baseMainnet],
+  chains: [mainnet, zkSyncMainnet, lineaMainnet, baseMainnet, zoraMainnet],
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });

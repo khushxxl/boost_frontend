@@ -15,7 +15,7 @@ import {
   lineaAddresses,
   lineaNFTS,
   nftData,
-  zksyncNFTS,
+  zoraNFTS,
 } from "@/utils/constants";
 import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers/react";
 import toast from "react-hot-toast";
@@ -39,7 +39,7 @@ function Dropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="white-glassmorphism flex font-mono text-sm items-center w-fit text-white rounded-lg p-2 px-4 outline-none">
-        {chainSelected ? chainSelected : "Select chain"}
+        {chainSelected ? chainSelected.chain : "Select chain"}
         <ChevronDown className="ml-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="border-0 text-white font-mono bg-[#323262]">
@@ -52,7 +52,7 @@ function Dropdown() {
                   await open();
                 }
 
-                if (chainSelected != data.chain) {
+                if (chainSelected?.chain != data.chain) {
                   await window.ethereum.request({
                     method: "wallet_switchEthereumChain",
                     params: [
@@ -62,7 +62,7 @@ function Dropdown() {
                     ],
                   });
                 }
-                setchainSelected(data.chain);
+                setchainSelected(data);
                 toast(`Network Changed to  ${data.chain}`, { icon: "✅" });
 
                 if (data.chain == "Base") {
@@ -73,8 +73,8 @@ function Dropdown() {
                   setnftsToUse(lineaNFTS);
                   setcontractAddresses(lineaAddresses);
                 }
-                if (data.chain == "ZkSync") {
-                  setnftsToUse(zksyncNFTS);
+                if (data.chain == "Zora") {
+                  setnftsToUse(zoraNFTS);
                 }
               }}
               key={i}

@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import toast, { Toaster } from "react-hot-toast";
 import Referral from "@/components/Referral";
+import { FAQAccordion } from "@/components/FAQAccordion";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
 
             {children}
             <Referral />
+            <FAQAccordion />
             <Footer />
           </body>
         </Web3ModalProvider>
