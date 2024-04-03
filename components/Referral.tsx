@@ -26,7 +26,7 @@ function Referral() {
 
   return (
     <div
-      id="#referral"
+      id="referral"
       className={`bg-slate-800 rounded-xl justify-center flex max-w-7xl mx-5  md:mx-auto mt-20 p-4 text-white ${
         address ? "flex-col" : "flex-row"
       }`}
