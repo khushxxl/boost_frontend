@@ -83,8 +83,8 @@ function Navbar() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href={"/mints"}>
-              <h2 className="cursor-pointer">Minted</h2>
+            <Link href={"/#referral"}>
+              <h2 className="cursor-pointer">Referral</h2>
             </Link>
           </DropdownMenuItem>
 
@@ -123,12 +123,12 @@ function Navbar() {
             </div>
           </Link>
           <div className="text-white hidden md:flex ml-10  items-center space-x-5 font-bold font-mono">
-            <Link href={"/"}>
+            <a href={"/#nfts"}>
               <h2 className="cursor-pointer">NFTs</h2>
-            </Link>
-            <Link href={"/mints"}>
-              <h2 className="cursor-pointer">Mints</h2>
-            </Link>
+            </a>
+            <a href={"/#referral"}>
+              <h2 className="cursor-pointer">Referral</h2>
+            </a>
             <Link href={"/my-boosts"}>
               <h2 className="cursor-pointer">My Boosts</h2>
             </Link>
@@ -136,8 +136,8 @@ function Navbar() {
           </div>
         </div>
 
-        <div className=" flex items-center">
-          <div className="mr-10 flex">
+        <div className="flex items-center">
+          <div className="mr-10 hidden md:flex">
             <Dropdown />
           </div>
 

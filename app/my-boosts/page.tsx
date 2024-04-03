@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,12 @@ import {
 import { AppContext } from "@/context/AppContext";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { nftData } from "../../utils/constants.js";
+import { abi, lineaNFTS, nftData } from "../../utils/constants.js";
+import { BrowserProvider, ethers } from "ethers";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers/react";
 
 function MyBoosts() {
   const {
@@ -21,12 +26,88 @@ function MyBoosts() {
     myBoostsChain,
     setmyBoostsChain,
   } = useContext(AppContext);
+  const { walletProvider } = useWeb3ModalProvider();
+
+  const [userBaseNFTs, setuserBaseNFTs] = useState([]);
+  const [userLineaMints, setuserLineaMints] = useState([]);
+
+  const { address } = useWeb3ModalAccount();
+
+  const [mintedBaseNFTs, setmintedBaseNFTs] = useState<any[]>([]);
+  const [loading, setloading] = useState(false);
+
+  const getLineaNfts = async (provider) => {
+    const signer = await provider.getSigner();
+    setloading(true);
+    const lineaMints: any = [];
+
+    // Gather all the promises for fetching NFT balances
+    const promises = lineaNFTS.map(async (nft) => {
+      const contractAddress = nft.address;
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+
+      try {
+        const balance = await contract.connect(signer).balanceOf(address);
+        console.log(nft.name + "'s balance is " + balance);
+        if (balance != 0) {
+          baseMints.push(nft);
+        }
+      } catch (error) {
+        // alert(error);
+        console.error(error.message);
+      }
+    });
+
+    // Wait for all promises to resolve
+    await Promise.all(promises);
+
+    setloading(false);
+
+    setuserLineaMints(lineaMints);
+  };
+
+  const getBaseNfts = async (provider) => {
+    const signer = await provider.getSigner();
+    setloading(true);
+    const baseMints: any = [];
+
+    // Gather all the promises for fetching NFT balances
+    const promises = nftData.map(async (nft) => {
+      const contractAddress = nft.address;
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+
+      try {
+        const balance = await contract.connect(signer).balanceOf(address);
+        console.log(nft.name + "'s balance is " + balance);
+        if (balance != 0) {
+          baseMints.push(nft);
+        }
+      } catch (error) {
+        // alert(error);
+        console.error(error.message);
+      }
+    });
+
+    // Wait for all promises to resolve
+    await Promise.all(promises);
+
+    setloading(false);
+
+    setmintedBaseNFTs(baseMints);
+  };
+
+  useEffect(() => {
+    const provider = new BrowserProvider(walletProvider);
+
+    // getBaseNfts(provider);
+    getLineaNfts(provider);
+  }, []);
 
   const Selector = () => {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger className=" mt-5 md:mt-0 text-4xl flex items-center font-mono bg-gradient-to-r px-4 from-purple-500 to-pink-500   p-2 rounded-md text-white text-center cursor-pointer">
-          {myBoostsChain.chain} <ChevronDown className="ml-5" />
+          {myBoostsChain?.chain} <ChevronDown className="ml-5" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="border-0 text-white font-mono bg-[#323262]">
           {options.map((data: any, i: number) => {
