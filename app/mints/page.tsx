@@ -100,7 +100,7 @@ function MyMints() {
           <ReactLoading type={"spin"} color={"white"} height={75} width={75} />
         ) : (
           mintedBaseNFTs.map((data, i) => {
-            return <MintedComponent data={data} i={i} />;
+            return <MintedComponent data={data} i={i} key={i} />;
           })
         )}
       </section>
