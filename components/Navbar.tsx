@@ -78,14 +78,14 @@ function Navbar() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-slate-900 font-mono border-2 border-gray-400 text-white">
           <DropdownMenuItem>
-            <Link onClick={scrollToNFTs} href="/#nfts">
-              <h2 className="cursor-pointer">Home</h2>
-            </Link>
+            <a href={"/#nfts"}>
+              <h2 className="cursor-pointer">NFTs</h2>
+            </a>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href={"/#referral"}>
+            <a href={"/#referral"}>
               <h2 className="cursor-pointer">Referral</h2>
-            </Link>
+            </a>
           </DropdownMenuItem>
 
           <DropdownMenuItem>

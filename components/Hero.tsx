@@ -208,6 +208,7 @@ function Hero({ refId }: { refId?: string }) {
           </h1>
         </div>
         <div
+          id="nfts"
           onClick={batchMint}
           className="bg-gradient-to-r from-purple-500 to-pink-500 justify-center
          items-center p-2 mt-10 w-36 rounded-md text-white text-center cursor-pointer transition-all transform hover:scale-110"
