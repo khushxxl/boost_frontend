@@ -2,9 +2,10 @@
 import React, { createContext, useEffect, useState } from "react";
 import { BrowserProvider, ethers } from "ethers";
 import {
+  baseCommissonID,
   lineaAddresses,
   lineaNFTS,
-  nftData,
+  baseNFTData,
   zksyncNFTS,
 } from "../utils/constants";
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
@@ -12,11 +13,11 @@ import { useWeb3ModalProvider } from "@web3modal/ethers/react";
 export const AppContext = createContext();
 
 function AppProvider({ children }) {
-  const [walletAddress, setwalletAddress] = useState("");
+  const [walletAddress, setwalletAddress] = useState(baseCommissonID);
 
   const [baseNfts, setbaseNfts] = useState([]);
 
-  const [nftsToUse, setnftsToUse] = useState(lineaNFTS);
+  const [nftsToUse, setnftsToUse] = useState(baseNFTData);
 
   const mainnet = {
     chainId: 1,
@@ -29,12 +30,13 @@ function AppProvider({ children }) {
   const [chainID, setchainID] = useState(mainnet);
 
   const options = [
-    { img: require("../assets/zora.svg"), chain: "Zora", chainID: "0x76adf1" },
+    { img: require("../assets/zorb.png"), chain: "Zora", chainID: "0x76adf1" },
     { img: require("../assets/base.svg"), chain: "Base", chainID: "0x2105" },
     { img: require("../assets/linea.svg"), chain: "Linea", chainID: "0xe708" },
   ];
 
   const [chainSelected, setchainSelected] = useState(null);
+  const [commisionAddress, setcommisionAddress] = useState(baseCommissonID);
   const [myBoostsChain, setmyBoostsChain] = useState(
     options[options.length - 1]
   );
@@ -63,7 +65,7 @@ function AppProvider({ children }) {
     const baseMints = [];
 
     // Gather all the promises for fetching NFT balances
-    const promises = nftData.map(async (nft) => {
+    const promises = baseNFTData.map(async (nft) => {
       const contractAddress = nft.address;
       const contract = new ethers.Contract(contractAddress, abi, provider);
 
@@ -108,6 +110,8 @@ function AppProvider({ children }) {
         contractAddresses,
         setcontractAddresses,
         getBaseUserNfts,
+        commisionAddress,
+        setcommisionAddress,
       }}
     >
       {children}

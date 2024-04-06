@@ -2,7 +2,7 @@
 import { CheckCircle, LoaderIcon } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { abi, baseAddresses, nftData } from "../../utils/constants.js";
+import { abi, baseAddresses, baseNFTData } from "../../utils/constants.js";
 import { BrowserProvider, ethers } from "ethers";
 import ReactLoading from "react-loading";
 
@@ -26,7 +26,7 @@ function MyMints() {
     const baseMints: any = [];
 
     // Gather all the promises for fetching NFT balances
-    const promises = nftData.map(async (nft) => {
+    const promises = baseNFTData.map(async (nft) => {
       const contractAddress = nft.address;
       const contract = new ethers.Contract(contractAddress, abi, provider);
 

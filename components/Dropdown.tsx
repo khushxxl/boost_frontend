@@ -12,9 +12,12 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import {
   baseAddresses,
+  baseCommissonID,
   lineaAddresses,
+  lineaCommissonID,
   lineaNFTS,
-  nftData,
+  baseNFTData,
+  zoraCommissonID,
   zoraNFTS,
 } from "@/utils/constants";
 import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers/react";
@@ -30,6 +33,8 @@ function Dropdown() {
     baseNft,
     contractAddresses,
     setcontractAddresses,
+    commisionAddress,
+    setcommisionAddress,
   } = useContext(AppContext);
   //   const options = ["ZkSync", "Base", "Scroll", "Starknet"];
 
@@ -39,6 +44,15 @@ function Dropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="white-glassmorphism flex font-mono text-sm items-center w-fit text-white rounded-lg p-2 px-4 outline-none">
+        {chainSelected && (
+          <Image
+            alt=""
+            height={20}
+            width={20}
+            src={chainSelected?.img}
+            className="mr-2"
+          />
+        )}
         {chainSelected ? chainSelected.chain : "Select chain"}
         <ChevronDown className="ml-4" />
       </DropdownMenuTrigger>
@@ -66,15 +80,18 @@ function Dropdown() {
                 toast(`Network Changed to  ${data.chain}`, { icon: "✅" });
 
                 if (data.chain == "Base") {
-                  setnftsToUse(nftData);
+                  setnftsToUse(baseNFTData);
                   setcontractAddresses(baseAddresses);
+                  setcommisionAddress(baseCommissonID);
                 }
                 if (data.chain == "Linea") {
                   setnftsToUse(lineaNFTS);
                   setcontractAddresses(lineaAddresses);
+                  setcommisionAddress(lineaCommissonID);
                 }
                 if (data.chain == "Zora") {
                   setnftsToUse(zoraNFTS);
+                  setcommisionAddress(zoraCommissonID);
                 }
               }}
               key={i}

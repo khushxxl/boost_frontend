@@ -6,11 +6,9 @@ import React from "react";
 
 function Footer() {
   return (
-    <section className="w-full flex justify-center items-center h-[200px] bg-[#06062A] mt-10 ">
+    <section className="w-full flex justify-center items-center h-[200px] bg-[rgb(6,6,42)] mt-10 ">
       <div className="flex items-center flex-col">
-        <h1 className="text-4xl text-gray-400 tracking-wider font-mono ">
-          Our Socials
-        </h1>
+        <h1 className="text-4xl text-gray-400 font-mono ">Our Socials</h1>
         <div className="mt-5 flex items-center space-x-10">
           <Link href={"https://x.com/boostitup_w?s=21"} target="_blank">
             <Image

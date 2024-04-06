@@ -1,7 +1,11 @@
 import NFTAbi from "./NFTabi.json";
 export const abi = NFTAbi.abi;
 
-export const nftData = [
+export const zoraCommissonID = "0x84b254Eab8E9B78c6d3e6AB0b051B06D248Fe42E";
+export const baseCommissonID = "0xeB9561570D5912378f918915799E38de5aE99CE1 ";
+export const lineaCommissonID = "0x8534c2373B035A940BdCc60860b03D433E435fA8";
+
+export const baseNFTData = [
   {
     id: 1,
     name: "Boost on Base #1",
