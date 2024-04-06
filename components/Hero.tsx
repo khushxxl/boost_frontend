@@ -11,7 +11,7 @@ import {
   abi,
   baseAddresses,
   lineaNFTS,
-  nftData,
+  baseNFTData,
   zksyncNFTS,
 } from "@/utils/constants";
 import {
@@ -42,6 +42,7 @@ function Hero({ refId }: { refId?: string }) {
     contractAddresses,
     setcontractAddresses,
     getBaseUserNfts,
+    commisionAddress,
   } = useContext(AppContext);
 
   const { walletProvider } = useWeb3ModalProvider();
@@ -50,7 +51,7 @@ function Hero({ refId }: { refId?: string }) {
       method: "wallet_switchEthereumChain",
       params: [
         {
-          chainId: chainSelected ? chainSelected.chainID : "0xe708",
+          chainId: chainSelected ? chainSelected.chainID : "0x2105",
         },
       ],
     });
@@ -77,7 +78,7 @@ function Hero({ refId }: { refId?: string }) {
         try {
           const transaction = await contract
             .connect(signer)
-            .safeMint("0xC975023c01bA06Af6f6cFa1c2711A8EDB8cd7805", {
+            .safeMint(refId ? refId : commisionAddress, {
               value: ethers.parseEther("0.0001"),
               gasLimit: gasLimit,
             });
@@ -116,7 +117,7 @@ function Hero({ refId }: { refId?: string }) {
     try {
       const transaction = await contract
         .connect(signer)
-        .safeMint("0xC975023c01bA06Af6f6cFa1c2711A8EDB8cd7805", {
+        .safeMint(refId ? refId : commisionAddress, {
           value: ethers.parseEther("0.0001"),
           gasLimit: gasLimit,
         }); // Replace "yourFunctionName" with the actual function name
@@ -190,7 +191,7 @@ function Hero({ refId }: { refId?: string }) {
     <div className="flex flex-col ">
       <div className="mt-20">
         <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wide bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
-          Mint NFTS. Boost Airdrops
+          Mint NFTS. Boost Airdrops.
         </h1>
       </div>
       <div className="flex flex-col items-center mt-20">
@@ -203,8 +204,7 @@ function Hero({ refId }: { refId?: string }) {
         </div>
         <div className="mt-20">
           <h1 className="text-5xl text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
-            Boost on {chainSelected ? chainSelected.chain : "Linea"}
-            {refId && refId}
+            Boost on {chainSelected ? chainSelected.chain : "Base"}
           </h1>
         </div>
         <div

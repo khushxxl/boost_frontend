@@ -11,12 +11,14 @@ import {
 import { AppContext } from "@/context/AppContext";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { abi, lineaNFTS, nftData } from "../../utils/constants.js";
+import { abi, lineaNFTS, baseNFTData } from "../../utils/constants.js";
 import { BrowserProvider, ethers } from "ethers";
 import {
+  useWeb3Modal,
   useWeb3ModalAccount,
   useWeb3ModalProvider,
 } from "@web3modal/ethers/react";
+import ReactLoading from "react-loading";
 
 function MyBoosts() {
   const {
@@ -28,10 +30,10 @@ function MyBoosts() {
   } = useContext(AppContext);
   const { walletProvider } = useWeb3ModalProvider();
 
-  const [userBaseNFTs, setuserBaseNFTs] = useState([]);
   const [userLineaMints, setuserLineaMints] = useState([]);
 
-  const { address } = useWeb3ModalAccount();
+  const { address, isConnected } = useWeb3ModalAccount();
+  const { open, close } = useWeb3Modal();
 
   const [mintedBaseNFTs, setmintedBaseNFTs] = useState<any[]>([]);
   const [loading, setloading] = useState(false);
@@ -50,7 +52,7 @@ function MyBoosts() {
         const balance = await contract.connect(signer).balanceOf(address);
         console.log(nft.name + "'s balance is " + balance);
         if (balance != 0) {
-          baseMints.push(nft);
+          lineaMints.push(nft);
         }
       } catch (error) {
         // alert(error);
@@ -65,6 +67,9 @@ function MyBoosts() {
 
     setuserLineaMints(lineaMints);
   };
+  const connectWallet = async () => {
+    open();
+  };
 
   const getBaseNfts = async (provider) => {
     const signer = await provider.getSigner();
@@ -72,7 +77,7 @@ function MyBoosts() {
     const baseMints: any = [];
 
     // Gather all the promises for fetching NFT balances
-    const promises = nftData.map(async (nft) => {
+    const promises = baseNFTData.map(async (nft) => {
       const contractAddress = nft.address;
       const contract = new ethers.Contract(contractAddress, abi, provider);
 
@@ -97,10 +102,13 @@ function MyBoosts() {
   };
 
   useEffect(() => {
-    const provider = new BrowserProvider(walletProvider);
+    if (isConnected) {
+      const provider = new BrowserProvider(walletProvider);
 
-    // getBaseNfts(provider);
-    getLineaNfts(provider);
+      getLineaNfts(provider);
+    } else {
+      connectWallet();
+    }
   }, []);
 
   const Selector = () => {
@@ -139,51 +147,55 @@ function MyBoosts() {
     <div className="">
       <div className="mt-20 flex flex-col md:flex-row justify-center items-center">
         <h1 className="text-5xl md:mr-5  text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
-          My Boosts on
+          x{userLineaMints?.length} Boosts on
         </h1>
         <Selector />
       </div>
 
       <div className="mt-10">
-        <h1 className="text-5xl  text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300">
-          x 15
-        </h1>
+        <h1 className="text-5xl  text-center font-mono font-extrabold text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-yellow-200 via-green-200 to-green-300"></h1>
       </div>
 
-      <section
-        id="#nfts"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  max-w-7xl min-w-max gap-x-10 mx-auto place-items-center mt-20"
-      >
-        {nftData.map((data, i) => {
-          return (
-            <div
-              className="mt-10 bg-[#17173C] p-5 rounded-2xl transition-all transform hover:scale-105 duration-150"
-              key={i}
-              onClick={() => {}}
-            >
-              <div onClick={() => {}}>
-                <Image
-                  height={300}
-                  width={220}
-                  alt=""
-                  className={`rounded-2xl cursor-pointer grayscale-[100%]`}
-                  src={data.img}
-                />
-              </div>
-              <h1 className="text-white font-bold text-sm mt-2 ml-2">
-                Boost #000{i + 1}
-              </h1>
-              <div className="bg-[#292956] mt-5 p-2 flex-col rounded-md flex justify-center items-center ">
-                <div className="bg-red-400 text-center  cursor-pointer flex justify-center items-center  py-[7px] p-[5px] w-full rounded-lg">
-                  <h1 className="font-semibold text-white tracking-wide">
-                    Mint More
-                  </h1>
+      {userLineaMints && userLineaMints.length > 0 ? (
+        <section
+          id="#nfts"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  max-w-7xl min-w-max gap-x-10 mx-auto place-items-center mt-20"
+        >
+          {userLineaMints?.map((data, i) => {
+            return (
+              <div
+                className="mt-10 bg-[#17173C] p-5 rounded-2xl transition-all transform hover:scale-105 duration-150"
+                key={i}
+                onClick={() => {}}
+              >
+                <div onClick={() => {}}>
+                  <Image
+                    height={300}
+                    width={220}
+                    alt=""
+                    className={`rounded-2xl cursor-pointer grayscale-[100%]`}
+                    src={data.img}
+                  />
+                </div>
+                <h1 className="text-white font-bold text-sm mt-2 ml-2">
+                  Boost #000{i + 1}
+                </h1>
+                <div className="bg-[#292956] mt-5 p-2 flex-col rounded-md flex justify-center items-center ">
+                  <div className="bg-red-400 text-center  cursor-pointer flex justify-center items-center  py-[7px] p-[5px] w-full rounded-lg">
+                    <h1 className="font-semibold text-white tracking-wide">
+                      Mint More
+                    </h1>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </section>
+            );
+          })}
+        </section>
+      ) : (
+        <section>
+          <ReactLoading type={"spin"} color={"white"} height={75} width={75} />
+        </section>
+      )}
     </div>
   );
 }

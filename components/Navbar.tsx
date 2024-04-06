@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, MenuIcon } from "lucide-react";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 function Navbar() {
   const {
@@ -119,7 +120,15 @@ function Navbar() {
         <div className=" flex items-center">
           <Link href={"/"}>
             <div>
-              <h2 className="text-white text-2xl font-bold">Boost</h2>
+              <h2 className="text-white text-2xl font-bold font-mono tracking-wider">
+                Boost
+              </h2>
+              {/* <Image
+                height={100}
+                width={100}
+                alt=""
+                src={require("../assets/boost_logo.png")}
+              /> */}
             </div>
           </Link>
           <div className="text-white hidden md:flex ml-10  items-center space-x-5 font-bold font-mono">
@@ -131,6 +140,9 @@ function Navbar() {
             </a>
             <Link href={"/my-boosts"}>
               <h2 className="cursor-pointer">My Boosts</h2>
+            </Link>
+            <Link href={"/#faq"}>
+              <h2 className="cursor-pointer">FAQs</h2>
             </Link>
             {/* <h1>{contractAddresses[0]}</h1> */}
           </div>

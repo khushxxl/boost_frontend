@@ -25,19 +25,26 @@ export function FAQAccordion() {
   ];
   return (
     <Accordion
+      id="faq"
       type="single"
       collapsible
       className="bg-slate-800 rounded-xl max-w-7xl mx-5 justify-center font-mono  md:mx-auto mt-20 p-4 text-white"
     >
-      <h1 className="font-bold text-2xl tracking-wider">
+      <h1 className="font-bold text-3xl tracking-wider text-gray-400">
         Frequently Asked Question
       </h1>
 
       {boostInfo.map((data, i) => {
         return (
-          <AccordionItem key={i} value={data.question}>
+          <AccordionItem
+            className="font-bold text-lg "
+            key={i}
+            value={data.question}
+          >
             <AccordionTrigger>{data.question}</AccordionTrigger>
-            <AccordionContent>{data.answer}</AccordionContent>
+            <AccordionContent className="text-left">
+              {data.answer}
+            </AccordionContent>
           </AccordionItem>
         );
       })}
