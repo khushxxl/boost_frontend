@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import toast, { Toaster } from "react-hot-toast";
 import Referral from "@/components/Referral";
 import { FAQAccordion } from "@/components/FAQAccordion";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </Head>
       <AppProvider>
         <Web3ModalProvider>
           <body className={inter.className}>
