@@ -115,20 +115,20 @@ function Navbar() {
     );
   }
   return (
-    <div className="p-5 flex w-full bg-[#06062A] sticky top-0 z-50  mx-auto px-10 rounded-b-3xl">
+    <div className="p-5 flex max-w-7xl mt-7 blue-glassmorphism  bg-[#06062A] sticky top-5 z-50  mx-auto px-10 rounded-b-3xl">
       <div className="flex w-full justify-between">
         <div className=" flex items-center">
           <Link href={"/"}>
-            <div>
-              <h2 className="text-white text-2xl font-bold font-mono tracking-wider">
-                Boost
-              </h2>
-              {/* <Image
-                height={100}
-                width={100}
+            <div className="flex items-center">
+              <Image
+                height={50}
+                width={50}
                 alt=""
-                src={require("../assets/boost_logo.png")}
-              /> */}
+                src={require("../assets/rocket.png")}
+              />
+              <h2 className="text-white text-xl font-bold font-mono tracking-wider">
+                BOOST
+              </h2>
             </div>
           </Link>
           <div className="text-white hidden md:flex ml-10  items-center space-x-5 font-bold font-mono">
